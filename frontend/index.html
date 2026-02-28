@@ -15,6 +15,8 @@
     <p id="status">等待加载...</p>
     <button onclick="simpleTest()"
       style="margin-top:10px; padding:10px; background:#444; color:white; border:none; cursor:pointer;">简单测试</button>
+    <button onclick="tryReact()"
+      style="margin-top:10px; padding:10px; background:#555; color:white; border:none; cursor:pointer; margin-left:5px;">尝试React</button>
   </div>
   <script>
     console.log('=== index.html loaded ===');
@@ -31,6 +33,30 @@
         root.appendChild(testDiv);
         document.getElementById('status').textContent = '简单测试成功！Root子元素数量: ' + root.children.length;
         console.log('Simple test successful');
+      }
+    }
+
+    function tryReact() {
+      console.log('=== Trying to access React ===');
+      const root = document.getElementById('root');
+      if (root) {
+        document.getElementById('status').textContent = '尝试访问React...';
+
+        if (window.Qf && window.S) {
+          console.log('React and ReactDOM available');
+          try {
+            const testDiv = window.S.jsx('div', { style: { padding: '20px', backgroundColor: '#444', color: 'white' } }, 'React测试成功！');
+            window.Qf.createRoot(root).render(testDiv);
+            document.getElementById('status').textContent = 'React测试成功！Root子元素数量: ' + root.children.length;
+            console.log('React test successful');
+          } catch (e) {
+            console.error('React test failed:', e);
+            document.getElementById('status').textContent = 'React测试失败: ' + e.message;
+          }
+        } else {
+          console.error('React or ReactDOM not available');
+          document.getElementById('status').textContent = 'React或ReactDOM不可用';
+        }
       }
     }
 

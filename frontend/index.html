@@ -5,14 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameTrend Radar</title>
-  <script>
-    console.log('=== index.html loaded ===');
-    window.debugInfo = {
-      htmlLoaded: true,
-      scriptsLoaded: [],
-      errors: []
-    };
-  </script>
   <link rel="stylesheet" crossorigin href="/assets/index-BLbnT8GC.css">
 </head>
 
@@ -20,65 +12,49 @@
   <div id="root"></div>
   <div id="debug" style="padding:20px; color:white; background:#333; border:2px solid #666;">
     <h3>调试信息</h3>
-    <p>HTML已加载: <span id="html-status">✅</span></p>
-    <p>Root元素存在: <span id="root-status">检查中...</span></p>
-    <p>根元素子元素数量: <span id="root-children">0</span></p>
-    <p>脚本加载状态: <span id="script-status">检查中...</span></p>
-    <p>错误信息: <span id="error-info">无</span></p>
-    <button onclick="testReact()"
-      style="margin-top:10px; padding:10px; background:#444; color:white; border:none; cursor:pointer;">测试React</button>
+    <p id="status">等待加载...</p>
+    <button onclick="simpleTest()"
+      style="margin-top:10px; padding:10px; background:#444; color:white; border:none; cursor:pointer;">简单测试</button>
   </div>
   <script>
-    console.log('=== Body script executing ===');
-    const root = document.getElementById('root');
-    if (root) {
-      document.getElementById('root-status').textContent = '✅ 存在';
-      document.getElementById('root-children').textContent = root.children.length;
-      console.log('Root element found:', root);
-    } else {
-      document.getElementById('root-status').textContent = '❌ 不存在';
-      console.error('Root element NOT found!');
-    }
+    console.log('=== index.html loaded ===');
+    document.getElementById('status').textContent = 'HTML已加载';
 
-    function testReact() {
-      console.log('=== Testing React ===');
-      if (window.Qf && window.S) {
-        console.log('React and ReactDOM available');
-        try {
-          const testDiv = window.S.jsx('div', { style: { padding: '20px', backgroundColor: '#444', color: 'white' } }, 'React测试成功！');
-          window.Qf.createRoot(root).render(testDiv);
-          document.getElementById('root-children').textContent = root.children.length;
-          console.log('React test successful');
-        } catch (e) {
-          console.error('React test failed:', e);
-          document.getElementById('error-info').textContent = e.message;
-        }
-      } else {
-        console.error('React or ReactDOM not available');
-        document.getElementById('error-info').textContent = 'React或ReactDOM不可用';
+    function simpleTest() {
+      const root = document.getElementById('root');
+      if (root) {
+        const testDiv = document.createElement('div');
+        testDiv.style.padding = '20px';
+        testDiv.style.backgroundColor = '#444';
+        testDiv.style.color = 'white';
+        testDiv.textContent = '简单测试成功！';
+        root.appendChild(testDiv);
+        document.getElementById('status').textContent = '简单测试成功！Root子元素数量: ' + root.children.length;
+        console.log('Simple test successful');
       }
     }
 
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('=== DOMContentLoaded ===');
+      document.getElementById('status').textContent = 'DOM已就绪，等待React应用...';
+    });
+
     window.addEventListener('load', () => {
       console.log('=== Window fully loaded ===');
-      document.getElementById('script-status').textContent = '✅ 已加载';
       const root = document.getElementById('root');
       if (root) {
-        document.getElementById('root-children').textContent = root.children.length;
+        document.getElementById('status').textContent = '窗口已加载。Root子元素数量: ' + root.children.length;
         console.log('Root children after load:', root.children.length);
-        console.log('Root innerHTML:', root.innerHTML);
       }
     });
 
     window.addEventListener('error', (event) => {
       console.error('Global error:', event);
-      document.getElementById('error-info').textContent = event.message;
-      window.debugInfo.errors.push(event.message);
+      document.getElementById('status').textContent = '错误: ' + event.message;
     });
   </script>
-  <script type="module" crossorigin src="/assets/index-kQApVUhF.js"
-    onerror="window.debugInfo.errors.push('Script load error'); console.error('Script load error');"
-    onload="window.debugInfo.scriptsLoaded.push('main'); console.log('Main script loaded');"></script>
+  <script type="module" crossorigin src="/assets/index-kQApVUhF.js" onerror="console.error('Script load error')"
+    onload="console.log('Main script loaded')"></script>
 </body>
 
 </html>

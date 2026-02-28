@@ -37,6 +37,10 @@
       "dest": "frontend/react-test.js"
     },
     {
+      "src": "/fix-react.js",
+      "dest": "frontend/fix-react.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/index.html"
     }

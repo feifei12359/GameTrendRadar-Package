@@ -29,6 +29,10 @@
       "dest": "frontend/index.html"
     },
     {
+      "src": "/main.js",
+      "dest": "frontend/main.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/index.html"
     }

@@ -33,6 +33,10 @@
       "dest": "frontend/main.js"
     },
     {
+      "src": "/react-test.js",
+      "dest": "frontend/react-test.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "frontend/index.html"
     }

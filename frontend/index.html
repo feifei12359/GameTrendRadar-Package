@@ -13,9 +13,6 @@
       errors: []
     };
   </script>
-  <script type="module" crossorigin src="/assets/index-kQApVUhF.js"
-    onerror="window.debugInfo.errors.push('Script load error'); console.error('Script load error');"
-    onload="window.debugInfo.scriptsLoaded.push('main'); console.log('Main script loaded');"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-BLbnT8GC.css">
 </head>
 
@@ -28,6 +25,8 @@
     <p>根元素子元素数量: <span id="root-children">0</span></p>
     <p>脚本加载状态: <span id="script-status">检查中...</span></p>
     <p>错误信息: <span id="error-info">无</span></p>
+    <button onclick="testReact()"
+      style="margin-top:10px; padding:10px; background:#444; color:white; border:none; cursor:pointer;">测试React</button>
   </div>
   <script>
     console.log('=== Body script executing ===');
@@ -39,6 +38,25 @@
     } else {
       document.getElementById('root-status').textContent = '❌ 不存在';
       console.error('Root element NOT found!');
+    }
+
+    function testReact() {
+      console.log('=== Testing React ===');
+      if (window.Qf && window.S) {
+        console.log('React and ReactDOM available');
+        try {
+          const testDiv = window.S.jsx('div', { style: { padding: '20px', backgroundColor: '#444', color: 'white' } }, 'React测试成功！');
+          window.Qf.createRoot(root).render(testDiv);
+          document.getElementById('root-children').textContent = root.children.length;
+          console.log('React test successful');
+        } catch (e) {
+          console.error('React test failed:', e);
+          document.getElementById('error-info').textContent = e.message;
+        }
+      } else {
+        console.error('React or ReactDOM not available');
+        document.getElementById('error-info').textContent = 'React或ReactDOM不可用';
+      }
     }
 
     window.addEventListener('load', () => {
@@ -58,6 +76,9 @@
       window.debugInfo.errors.push(event.message);
     });
   </script>
+  <script type="module" crossorigin src="/assets/index-kQApVUhF.js"
+    onerror="window.debugInfo.errors.push('Script load error'); console.error('Script load error');"
+    onload="window.debugInfo.scriptsLoaded.push('main'); console.log('Main script loaded');"></script>
 </body>
 
 </html>

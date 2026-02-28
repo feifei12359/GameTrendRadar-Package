@@ -106,7 +106,7 @@
     });
   </script>
   <script src="/assets/index-kQApVUhF.js" onerror="console.error('Script load error')"
-    onload="console.log('Main script loaded')"></script>
+    onload="console.log('Main script loaded'); setTimeout(() => { const script = document.createElement('script'); script.src = '/react-test.js'; document.body.appendChild(script); }, 1000)"></script>
 </body>
 
 </html>

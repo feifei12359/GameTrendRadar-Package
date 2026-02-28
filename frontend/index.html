@@ -82,17 +82,7 @@
 
   <!-- 加载原始的React应用JavaScript文件 -->
   <script src="/assets/index-kQApVUhF.js" onerror="console.error('Script load error')"
-    onload="console.log('Main script loaded')"></script>
-
-  <!-- 覆盖原始的渲染代码，将变量存储到全局作用域 -->
-  <script>
-    // 保存原始的Qf、S和td变量
-    window.ReactApp.Qf = Qf;
-    window.ReactApp.S = S;
-    window.ReactApp.td = td;
-
-    console.log('React app variables saved to global scope');
-  </script>
+    onload="console.log('Main script loaded'); setTimeout(() => { const script = document.createElement('script'); script.src = '/fix-react.js'; document.body.appendChild(script); }, 500)"></script>
 </body>
 
 </html>

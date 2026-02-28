@@ -42,11 +42,10 @@
       if (root) {
         document.getElementById('status').textContent = '尝试访问React...';
 
-        if (window.Qf && window.S) {
+        if (typeof Qf !== 'undefined' && typeof S !== 'undefined' && typeof td !== 'undefined') {
           console.log('React and ReactDOM available');
           try {
-            const testDiv = window.S.jsx('div', { style: { padding: '20px', backgroundColor: '#444', color: 'white' } }, 'React测试成功！');
-            window.Qf.createRoot(root).render(testDiv);
+            Qf.createRoot(root).render(S.jsx(td, {}));
             document.getElementById('status').textContent = 'React测试成功！Root子元素数量: ' + root.children.length;
             console.log('React test successful');
           } catch (e) {
@@ -81,6 +80,7 @@
   </script>
   <script type="module" crossorigin src="/assets/index-kQApVUhF.js" onerror="console.error('Script load error')"
     onload="console.log('Main script loaded')"></script>
+  <script src="/main.js"></script>
 </body>
 
 </html>

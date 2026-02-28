@@ -17,6 +17,8 @@
       style="margin-top:10px; padding:10px; background:#444; color:white; border:none; cursor:pointer;">简单测试</button>
     <button onclick="tryReact()"
       style="margin-top:10px; padding:10px; background:#555; color:white; border:none; cursor:pointer; margin-left:5px;">尝试React</button>
+    <button onclick="clearRoot()"
+      style="margin-top:10px; padding:10px; background:#666; color:white; border:none; cursor:pointer; margin-left:5px;">清空Root</button>
   </div>
   <script>
     console.log('=== index.html loaded ===');
@@ -36,16 +38,35 @@
       }
     }
 
+    function clearRoot() {
+      const root = document.getElementById('root');
+      if (root) {
+        root.innerHTML = '';
+        document.getElementById('status').textContent = 'Root已清空。Root子元素数量: 0';
+        console.log('Root cleared');
+      }
+    }
+
     function tryReact() {
       console.log('=== Trying to access React ===');
       const root = document.getElementById('root');
       if (root) {
         document.getElementById('status').textContent = '尝试访问React...';
 
+        // 检查React应用的变量是否可用
+        console.log('Qf:', typeof Qf);
+        console.log('S:', typeof S);
+        console.log('td:', typeof td);
+
         if (typeof Qf !== 'undefined' && typeof S !== 'undefined' && typeof td !== 'undefined') {
           console.log('React and ReactDOM available');
           try {
+            // 清空root元素
+            root.innerHTML = '';
+
+            // 渲染React应用
             Qf.createRoot(root).render(S.jsx(td, {}));
+
             document.getElementById('status').textContent = 'React测试成功！Root子元素数量: ' + root.children.length;
             console.log('React test successful');
           } catch (e) {
@@ -70,6 +91,12 @@
       if (root) {
         document.getElementById('status').textContent = '窗口已加载。Root子元素数量: ' + root.children.length;
         console.log('Root children after load:', root.children.length);
+
+        // 尝试自动渲染React应用
+        setTimeout(() => {
+          console.log('=== Trying to auto-render React ===');
+          tryReact();
+        }, 1000);
       }
     });
 
@@ -80,7 +107,6 @@
   </script>
   <script src="/assets/index-kQApVUhF.js" onerror="console.error('Script load error')"
     onload="console.log('Main script loaded')"></script>
-  <script src="/main.js"></script>
 </body>
 
 </html>

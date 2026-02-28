@@ -5,7 +5,7 @@ const app_module_1 = require("./app.module");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
-        origin: ['http://localhost:5173', 'https://game-trend-radar.vercel.app'],
+        origin: ['http://localhost:5173', 'https://game-trend-radar.vercel.app', 'https://game-trend-radar-backend.vercel.app'],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         credentials: true,
     });

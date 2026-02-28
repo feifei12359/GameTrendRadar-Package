@@ -17,8 +17,9 @@ let GameService = class GameService {
         this.prisma = prisma;
     }
     async getGames(minScore) {
+        const game = await this.prisma.game();
         if (minScore) {
-            return this.prisma.game.findMany({
+            return game.findMany({
                 where: {
                     totalScore: {
                         gte: minScore,
@@ -29,32 +30,36 @@ let GameService = class GameService {
                 },
             });
         }
-        return this.prisma.game.findMany({
+        return game.findMany({
             orderBy: {
                 totalScore: 'desc',
             },
         });
     }
     async createGame(gameData) {
-        return this.prisma.game.create({
+        const game = await this.prisma.game();
+        return game.create({
             data: gameData,
         });
     }
     async updateGame(id, data) {
-        return this.prisma.game.update({
+        const game = await this.prisma.game();
+        return game.update({
             where: { id },
             data,
         });
     }
     async findByUrl(url) {
-        return this.prisma.game.findUnique({
+        const game = await this.prisma.game();
+        return game.findUnique({
             where: { url },
         });
     }
     async getRecentGames(days) {
+        const game = await this.prisma.game();
         const cutoffDate = new Date();
         cutoffDate.setDate(cutoffDate.getDate() - days);
-        return this.prisma.game.findMany({
+        return game.findMany({
             where: {
                 createdAt: {
                     gte: cutoffDate,

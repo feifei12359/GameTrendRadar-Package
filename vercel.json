@@ -12,19 +12,8 @@
   ],
   "routes": [
     {
-      "src": "/api/games/seed",
-      "dest": "backend/main.js",
-      "methods": ["POST"]
-    },
-    {
-      "src": "/api/daily-job",
-      "dest": "backend/main.js",
-      "methods": ["POST"]
-    },
-    {
       "src": "/api/(.*)",
-      "dest": "backend/main.js",
-      "methods": ["GET", "PUT", "PATCH", "DELETE", "OPTIONS"]
+      "dest": "backend/main.js"
     },
     {
       "src": "/assets/(.*)",

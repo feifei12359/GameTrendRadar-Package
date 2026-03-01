@@ -9,24 +9,60 @@
 </head>
 
 <body>
-  <div id="root">
-    <h1>页面能正常打开！</h1>
-    <p>React和ReactDOM加载测试...</p>
-  </div>
+  <div id="root"></div>
 
-  <!-- 第一步：添加React和ReactDOM -->
+  <!-- 加载React和ReactDOM -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
 
   <script>
-    console.log('React loaded:', typeof React);
-    console.log('ReactDOM loaded:', typeof ReactDOM);
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('开始渲染React组件...');
 
-    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
-      document.getElementById('root').innerHTML += '<p style="color:green">✅ React和ReactDOM加载成功！</p>';
-    } else {
-      document.getElementById('root').innerHTML += '<p style="color:red">❌ React或ReactDOM加载失败</p>';
-    }
+      try {
+        // 创建一个简单的React组件
+        function SimpleApp() {
+          return React.createElement('div', {
+            style: {
+              padding: '20px',
+              backgroundColor: '#0f1419',
+              color: 'white',
+              minHeight: '100vh'
+            }
+          }, [
+            React.createElement('h1', {
+              key: 'title',
+              style: { color: 'white', fontSize: '24px' }
+            }, '🎮 GameTrend Radar'),
+            React.createElement('p', {
+              key: 'subtitle',
+              style: { color: '#ccc' }
+            }, 'HTML5 游戏趋势检测工具'),
+            React.createElement('div', {
+              key: 'status',
+              style: {
+                marginTop: '20px',
+                padding: '10px',
+                backgroundColor: 'green',
+                borderRadius: '5px'
+              }
+            }, '✅ React应用渲染成功！')
+          ]);
+        }
+
+        // 渲染组件
+        const root = document.getElementById('root');
+        if (root) {
+          ReactDOM.createRoot(root).render(React.createElement(SimpleApp));
+          console.log('React组件渲染完成！');
+        }
+      } catch (error) {
+        console.error('渲染出错:', error);
+        // 如果React渲染失败，显示错误信息
+        document.getElementById('root').innerHTML =
+          '<div style="padding:20px; background:#f00; color:white">❌ React渲染失败: ' + error.message + '</div>';
+      }
+    });
   </script>
 </body>
 

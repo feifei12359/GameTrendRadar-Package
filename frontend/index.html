@@ -11,8 +11,23 @@
 <body>
   <div id="root">
     <h1>页面能正常打开！</h1>
-    <p>这是一个简单的测试。</p>
+    <p>React和ReactDOM加载测试...</p>
   </div>
+
+  <!-- 第一步：添加React和ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <script>
+    console.log('React loaded:', typeof React);
+    console.log('ReactDOM loaded:', typeof ReactDOM);
+
+    if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
+      document.getElementById('root').innerHTML += '<p style="color:green">✅ React和ReactDOM加载成功！</p>';
+    } else {
+      document.getElementById('root').innerHTML += '<p style="color:red">❌ React或ReactDOM加载失败</p>';
+    }
+  </script>
 </body>
 
 </html>

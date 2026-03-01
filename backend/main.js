@@ -7,7 +7,14 @@ async function getApp() {
     if (!app) {
         app = await core_1.NestFactory.create(app_module_1.AppModule);
         app.enableCors({
-            origin: ['http://localhost:5173', 'https://game-trend-radar.vercel.app', 'https://game-trend-radar-backend.vercel.app'],
+            origin: [
+                'http://localhost:5173', 
+                'https://game-trend-radar.vercel.app', 
+                'https://game-trend-radar-backend.vercel.app',
+                'https://game-trend-radar-frontend.vercel.app',
+                'https://*.vercel.app',
+                'https://*.railway.app'
+            ],
             methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
             credentials: true,
         });

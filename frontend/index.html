@@ -17,51 +17,241 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('开始渲染React组件...');
+      function App() {
+        const [games, setGames] = React.useState([]);
+        const [tasks, setTasks] = React.useState([]);
 
-      try {
-        // 创建一个简单的React组件
-        function SimpleApp() {
-          return React.createElement('div', {
-            style: {
-              padding: '20px',
-              backgroundColor: '#0f1419',
-              color: 'white',
-              minHeight: '100vh'
-            }
-          }, [
-            React.createElement('h1', {
-              key: 'title',
-              style: { color: 'white', fontSize: '24px' }
-            }, '🎮 GameTrend Radar'),
-            React.createElement('p', {
-              key: 'subtitle',
-              style: { color: '#ccc' }
-            }, 'HTML5 游戏趋势检测工具'),
-            React.createElement('div', {
-              key: 'status',
-              style: {
-                marginTop: '20px',
-                padding: '10px',
-                backgroundColor: 'green',
-                borderRadius: '5px'
+        // 模拟加载游戏数据
+        React.useEffect(() => {
+          setTimeout(() => {
+            setGames([
+              {
+                id: 1,
+                gameName: 'Test Game 1',
+                source: 'Steam',
+                trendScore: 85,
+                ytScore: 90,
+                totalScore: 87,
+                status: 'worth_doing'
+              },
+              {
+                id: 2,
+                gameName: 'Test Game 2',
+                source: 'Epic',
+                trendScore: 75,
+                ytScore: 80,
+                totalScore: 77,
+                status: 'observe'
               }
-            }, '✅ React应用渲染成功！')
-          ]);
-        }
+            ]);
+            setTasks([
+              '2026/2/28 18:40:05 - 开始完整检测...',
+              '2026/2/28 18:40:10 - 检测完成',
+              '2026/2/28 18:40:15 - 抓取: 10, 评分: 10, 值得做: 5'
+            ]);
+          }, 1000);
+        }, []);
 
-        // 渲染组件
-        const root = document.getElementById('root');
-        if (root) {
-          ReactDOM.createRoot(root).render(React.createElement(SimpleApp));
-          console.log('React组件渲染完成！');
-        }
-      } catch (error) {
-        console.error('渲染出错:', error);
-        // 如果React渲染失败，显示错误信息
-        document.getElementById('root').innerHTML =
-          '<div style="padding:20px; background:#f00; color:white">❌ React渲染失败: ' + error.message + '</div>';
+        return React.createElement('div', {
+          className: 'min-h-screen bg-[#0f1419] text-white'
+        }, [
+          React.createElement('header', {
+            key: 'header',
+            className: 'border-b border-gray-800 px-6 py-4'
+          }, React.createElement('div', {
+            className: 'flex items-center justify-between'
+          }, [
+            React.createElement('div', {
+              key: 'header-title'
+            }, [
+              React.createElement('h1', {
+                key: 'title',
+                className: 'text-2xl flex items-center gap-2'
+              }, '🎮 GameTrend Radar'),
+              React.createElement('p', {
+                key: 'subtitle',
+                className: 'text-sm text-gray-400 mt-1'
+              }, 'HTML5 游戏趋势检测工具')
+            ]),
+            React.createElement('button', {
+              key: 'run-button',
+              className: 'bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors'
+            }, '执行完整检测')
+          ])),
+          React.createElement('main', {
+            key: 'main',
+            className: 'p-6 space-y-6'
+          }, [
+            React.createElement('div', {
+              key: 'stats',
+              className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'
+            }, [
+              React.createElement('div', {
+                key: 'total',
+                className: 'bg-[#1a2332] rounded-lg border-2 border-gray-700 p-6 text-center'
+              }, [
+                React.createElement('div', {
+                  key: 'total-value',
+                  className: 'text-5xl font-bold mb-2 text-white'
+                }, games.length),
+                React.createElement('div', {
+                  key: 'total-label',
+                  className: 'text-sm text-gray-400'
+                }, '总游戏数')
+              ]),
+              React.createElement('div', {
+                key: 'worth-doing',
+                className: 'bg-[#1a2332] rounded-lg border-2 border-green-600 p-6 text-center'
+              }, [
+                React.createElement('div', {
+                  key: 'worth-doing-value',
+                  className: 'text-5xl font-bold mb-2 text-green-500'
+                }, games.filter(game => game.status === 'worth_doing').length),
+                React.createElement('div', {
+                  key: 'worth-doing-label',
+                  className: 'text-sm text-gray-400'
+                }, '值得做')
+              ]),
+              React.createElement('div', {
+                key: 'observe',
+                className: 'bg-[#1a2332] rounded-lg border-2 border-red-600 p-6 text-center'
+              }, [
+                React.createElement('div', {
+                  key: 'observe-value',
+                  className: 'text-5xl font-bold mb-2 text-red-500'
+                }, games.filter(game => game.status === 'observe').length),
+                React.createElement('div', {
+                  key: 'observe-label',
+                  className: 'text-sm text-gray-400'
+                }, '观察')
+              ]),
+              React.createElement('div', {
+                key: 'pending',
+                className: 'bg-[#1a2332] rounded-lg border-2 border-yellow-600 p-6 text-center'
+              }, [
+                React.createElement('div', {
+                  key: 'pending-value',
+                  className: 'text-5xl font-bold mb-2 text-yellow-500'
+                }, games.filter(game => game.status === 'pending').length),
+                React.createElement('div', {
+                  key: 'pending-label',
+                  className: 'text-sm text-gray-400'
+                }, '待检测')
+              ])
+            ]),
+            React.createElement('div', {
+              key: 'games',
+              className: 'bg-[#1a2332] rounded-lg border border-gray-800 overflow-hidden'
+            }, [
+              React.createElement('div', {
+                key: 'games-header',
+                className: 'p-6 pb-4'
+              }, React.createElement('h2', {
+                className: 'text-lg'
+              }, ['游戏列表 (', games.length, ')'])),
+              React.createElement('div', {
+                key: 'games-table',
+                className: 'overflow-x-auto'
+              }, React.createElement('table', {
+                className: 'w-full'
+              }, [
+                React.createElement('thead', {
+                  key: 'thead'
+                }, React.createElement('tr', {
+                  className: 'border-t border-b border-gray-800'
+                }, [
+                  React.createElement('th', {
+                    key: 'name',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, '游戏名称'),
+                  React.createElement('th', {
+                    key: 'source',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, '来源'),
+                  React.createElement('th', {
+                    key: 'trend',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, '趋势分'),
+                  React.createElement('th', {
+                    key: 'youtube',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, 'YOUTUBE'),
+                  React.createElement('th', {
+                    key: 'total',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, '总分'),
+                  React.createElement('th', {
+                    key: 'status',
+                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
+                  }, '状态')
+                ])),
+                React.createElement('tbody', {
+                  key: 'tbody'
+                }, games.length === 0 ? React.createElement('tr', {
+                  key: 'empty'
+                }, React.createElement('td', {
+                  colSpan: 6,
+                  className: 'text-center py-12 text-gray-500'
+                }, '暂无游戏数据，请点击"执行完整检测"开始抓取')) : games.map((game, index) => React.createElement('tr', {
+                  key: game.id,
+                  className: 'border-b border-gray-800 hover:bg-[#0f1419] transition-colors'
+                }, [
+                  React.createElement('td', {
+                    key: 'name-' + game.id,
+                    className: 'px-6 py-4'
+                  }, game.gameName),
+                  React.createElement('td', {
+                    key: 'source-' + game.id,
+                    className: 'px-6 py-4 text-gray-400'
+                  }, game.source),
+                  React.createElement('td', {
+                    key: 'trend-' + game.id,
+                    className: 'px-6 py-4'
+                  }, game.trendScore),
+                  React.createElement('td', {
+                    key: 'youtube-' + game.id,
+                    className: 'px-6 py-4'
+                  }, game.ytScore),
+                  React.createElement('td', {
+                    key: 'total-' + game.id,
+                    className: 'px-6 py-4'
+                  }, game.totalScore),
+                  React.createElement('td', {
+                    key: 'status-' + game.id,
+                    className: 'px-6 py-4'
+                  }, React.createElement('span', {
+                    className: game.status === 'worth_doing' ? 'px-2 py-1 rounded text-xs bg-green-900/30 text-green-400 border border-green-700' : game.status === 'observe' ? 'px-2 py-1 rounded text-xs bg-red-900/30 text-red-400 border border-red-700' : 'px-2 py-1 rounded text-xs bg-yellow-900/30 text-yellow-400 border border-yellow-700'
+                  }, game.status === 'worth_doing' ? '值得做' : game.status === 'observe' ? '观察' : '待检测'))
+                ])))
+              ]))
+            ]),
+            React.createElement('div', {
+              key: 'tasks',
+              className: 'bg-[#1a2332] rounded-lg border border-gray-800 p-6'
+            }, [
+              React.createElement('h2', {
+                key: 'tasks-title',
+                className: 'text-lg mb-4'
+              }, '最近操作日志'),
+              tasks.length === 0 ? React.createElement('div', {
+                key: 'empty-tasks',
+                className: 'text-center py-12 text-gray-500'
+              }, '暂无操作日志') : React.createElement('div', {
+                key: 'task-list',
+                className: 'space-y-2'
+              }, tasks.map((task, index) => React.createElement('div', {
+                key: index,
+                className: 'text-sm text-gray-400 border-b border-gray-800 pb-2 last:border-0'
+              }, task))))
+          ])
+        ])
+        ]);
       }
+
+    const root = document.getElementById('root');
+    if (root) {
+      ReactDOM.createRoot(root).render(React.createElement(App));
+    }
     });
   </script>
 </body>

@@ -21,10 +21,13 @@
       function App() {
         const [games, setGames] = React.useState([]);
         const [tasks, setTasks] = React.useState([]);
-        const [statusFilter, setStatusFilter] = React.useState('all');
-        const [sortBy, setSortBy] = React.useState('totalScore');
-        const [sortOrder, setSortOrder] = React.useState('desc');
         const [loading, setLoading] = React.useState(false);
+
+        // 添加操作日志
+        const addTask = (task) => {
+          const timestamp = new Date().toLocaleString();
+          setTasks(prev => [`${timestamp} - ${task}`, ...prev].slice(0, 10));
+        };
 
         // 从后端API获取游戏数据
         const fetchGames = React.useCallback(async () => {
@@ -64,35 +67,10 @@
           setLoading(false);
         };
 
-        // 添加操作日志
-        const addTask = (task) => {
-          const timestamp = new Date().toLocaleString();
-          setTasks(prev => [`${timestamp} - ${task}`, ...prev].slice(0, 10));
-        };
-
         // 初始化加载
         React.useEffect(() => {
           fetchGames();
         }, [fetchGames]);
-
-        // 过滤和排序游戏
-        const filteredGames = React.useMemo(() => {
-          let result = [...games];
-
-          // 过滤
-          if (statusFilter !== 'all') {
-            result = result.filter(game => game.status === statusFilter);
-          }
-
-          // 排序
-          result.sort((a, b) => {
-            const aVal = a[sortBy] || 0;
-            const bVal = b[sortBy] || 0;
-            return sortOrder === 'desc' ? bVal - aVal : aVal - bVal;
-          });
-
-          return result;
-        }, [games, statusFilter, sortBy, sortOrder]);
 
         // 统计数据
         const stats = React.useMemo(() => {
@@ -103,30 +81,6 @@
             pending: games.filter(g => g.status === 'pending').length
           };
         }, [games]);
-
-        // 获取状态样式
-        const getStatusStyle = (status) => {
-          switch (status) {
-            case 'worth_doing':
-              return 'px-2 py-1 rounded text-xs bg-green-900/30 text-green-400 border border-green-700';
-            case 'observe':
-              return 'px-2 py-1 rounded text-xs bg-red-900/30 text-red-400 border border-red-700';
-            default:
-              return 'px-2 py-1 rounded text-xs bg-yellow-900/30 text-yellow-400 border border-yellow-700';
-          }
-        };
-
-        // 获取状态显示文本
-        const getStatusText = (status) => {
-          switch (status) {
-            case 'worth_doing':
-              return '值得做';
-            case 'observe':
-              return '观察';
-            default:
-              return '待检测';
-          }
-        };
 
         return React.createElement('div', {
           className: 'min-h-screen bg-[#0f1419] text-white'
@@ -218,123 +172,6 @@
               ])
             ]),
             React.createElement('div', {
-              key: 'actions',
-              className: 'bg-[#1a2332] rounded-lg border border-gray-800 p-6'
-            }, [
-              React.createElement('h2', {
-                key: 'actions-title',
-                className: 'text-lg mb-4'
-              }, '快速操作'),
-              React.createElement('div', {
-                key: 'action-buttons',
-                className: 'flex flex-wrap gap-3'
-              }, [
-                React.createElement('button', {
-                  key: 'scrape',
-                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
-                }, '🎮 抓取游戏'),
-                React.createElement('button', {
-                  key: 'trend',
-                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
-                }, '📈 趋势检测'),
-                React.createElement('button', {
-                  key: 'youtube',
-                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
-                }, '📺 YouTube检测'),
-                React.createElement('button', {
-                  key: 'update',
-                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
-                }, '🔄 更新评分')
-              ])
-            ]),
-            React.createElement('div', {
-              key: 'filters',
-              className: 'bg-[#1a2332] rounded-lg border border-gray-800 p-6'
-            }, React.createElement('div', {
-              className: 'flex flex-wrap items-center gap-4'
-            }, [
-              React.createElement('div', {
-                key: 'status-filter',
-                className: 'flex items-center gap-2'
-              }, [
-                React.createElement('label', {
-                  key: 'status-label',
-                  className: 'text-sm text-gray-400'
-                }, '状态筛选:'),
-                React.createElement('select', {
-                  key: 'status-select',
-                  value: statusFilter,
-                  onChange: (e) => setStatusFilter(e.target.value),
-                  className: 'bg-[#0f1419] border border-gray-700 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500'
-                }, [
-                  React.createElement('option', {
-                    key: 'all',
-                    value: 'all'
-                  }, '全部'),
-                  React.createElement('option', {
-                    key: 'worth-doing',
-                    value: 'worth_doing'
-                  }, '值得做'),
-                  React.createElement('option', {
-                    key: 'observe',
-                    value: 'observe'
-                  }, '观察'),
-                  React.createElement('option', {
-                    key: 'pending',
-                    value: 'pending'
-                  }, '待检测')
-                ])
-              ]),
-              React.createElement('div', {
-                key: 'sort-filter',
-                className: 'flex items-center gap-2'
-              }, [
-                React.createElement('label', {
-                  key: 'sort-label',
-                  className: 'text-sm text-gray-400'
-                }, '排序:'),
-                React.createElement('select', {
-                  key: 'sort-select',
-                  value: sortBy,
-                  onChange: (e) => setSortBy(e.target.value),
-                  className: 'bg-[#0f1419] border border-gray-700 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500'
-                }, [
-                  React.createElement('option', {
-                    key: 'total',
-                    value: 'totalScore'
-                  }, '总分'),
-                  React.createElement('option', {
-                    key: 'trend',
-                    value: 'trendScore'
-                  }, '趋势分'),
-                  React.createElement('option', {
-                    key: 'youtube',
-                    value: 'ytScore'
-                  }, 'YouTube分')
-                ])
-              ]),
-              React.createElement('div', {
-                key: 'order-filter',
-                className: 'flex items-center gap-2'
-              }, [
-                React.createElement('select', {
-                  key: 'order-select',
-                  value: sortOrder,
-                  onChange: (e) => setSortOrder(e.target.value),
-                  className: 'bg-[#0f1419] border border-gray-700 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500'
-                }, [
-                  React.createElement('option', {
-                    key: 'desc',
-                    value: 'desc'
-                  }, '降序'),
-                  React.createElement('option', {
-                    key: 'asc',
-                    value: 'asc'
-                  }, '升序')
-                ])
-              ])
-            ])),
-            React.createElement('div', {
               key: 'games',
               className: 'bg-[#1a2332] rounded-lg border border-gray-800 overflow-hidden'
             }, [
@@ -343,7 +180,7 @@
                 className: 'p-6 pb-4'
               }, React.createElement('h2', {
                 className: 'text-lg'
-              }, ['游戏列表 (', filteredGames.length, ')'])),
+              }, ['游戏列表 (', games.length, ')'])),
               React.createElement('div', {
                 key: 'games-table',
                 className: 'overflow-x-auto'
@@ -378,20 +215,16 @@
                   React.createElement('th', {
                     key: 'status',
                     className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
-                  }, '状态'),
-                  React.createElement('th', {
-                    key: 'details',
-                    className: 'text-left px-6 py-3 text-sm text-gray-400 font-normal'
-                  }, '详情')
+                  }, '状态')
                 ])),
                 React.createElement('tbody', {
                   key: 'tbody'
-                }, filteredGames.length === 0 ? React.createElement('tr', {
+                }, games.length === 0 ? React.createElement('tr', {
                   key: 'empty'
                 }, React.createElement('td', {
-                  colSpan: 7,
+                  colSpan: 6,
                   className: 'text-center py-12 text-gray-500'
-                }, '暂无游戏数据，请点击"执行完整检测"开始抓取')) : filteredGames.map((game, index) => React.createElement('tr', {
+                }, '暂无游戏数据，请点击"执行完整检测"开始抓取')) : games.map((game) => React.createElement('tr', {
                   key: game.id,
                   className: 'border-b border-gray-800 hover:bg-[#0f1419] transition-colors'
                 }, [
@@ -419,14 +252,12 @@
                     key: 'status-' + game.id,
                     className: 'px-6 py-4'
                   }, React.createElement('span', {
-                    className: getStatusStyle(game.status)
-                  }, getStatusText(game.status))),
-                  React.createElement('td', {
-                    key: 'details-' + game.id,
-                    className: 'px-6 py-4'
-                  }, React.createElement('button', {
-                    className: 'text-blue-500 hover:text-blue-400 text-sm'
-                  }, '查看'))
+                    className: game.status === 'worth_doing'
+                      ? 'px-2 py-1 rounded text-xs bg-green-900/30 text-green-400 border border-green-700'
+                      : game.status === 'observe'
+                        ? 'px-2 py-1 rounded text-xs bg-red-900/30 text-red-400 border border-red-700'
+                        : 'px-2 py-1 rounded text-xs bg-yellow-900/30 text-yellow-400 border border-yellow-700'
+                  }, game.status === 'worth_doing' ? '值得做' : game.status === 'observe' ? '观察' : '待检测'))
                 ])))
               ]))
             ]),
@@ -449,14 +280,15 @@
                 className: 'text-sm text-gray-400 border-b border-gray-800 pb-2 last:border-0'
               }, task))))
           ])
+        ])
         ]);
       }
 
-      // 渲染组件
-      const root = document.getElementById('root');
-      if (root) {
-        ReactDOM.createRoot(root).render(React.createElement(App));
-      }
+    // 渲染组件
+    const root = document.getElementById('root');
+    if (root) {
+      ReactDOM.createRoot(root).render(React.createElement(App));
+    }
     });
   </script>
 </body>

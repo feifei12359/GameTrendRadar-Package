@@ -20,83 +20,39 @@
       function App() {
         const [games, setGames] = React.useState([]);
         const [tasks, setTasks] = React.useState([]);
-        const [loading, setLoading] = React.useState(false);
-
-        const addTask = (task) => {
-          const timestamp = new Date().toLocaleString();
-          setTasks(prev => [`${timestamp} - ${task}`, ...prev].slice(0, 10));
-        };
-
-        const fetchGames = React.useCallback(async () => {
-          try {
-            const response = await fetch('/api/games');
-            if (response.ok) {
-              const data = await response.json();
-              setGames(data);
-              addTask('✅ 游戏数据加载成功');
-            } else {
-              addTask('❌ 获取游戏数据失败');
-            }
-          } catch (error) {
-            console.error('Error fetching games:', error);
-            addTask('❌ 获取游戏数据出错');
-          }
-        }, []);
-
-        const runFullCheck = async () => {
-          setLoading(true);
-          addTask('🔄 开始完整检测...');
-
-          try {
-            const response = await fetch('/api/daily-job', { method: 'POST' });
-            if (response.ok) {
-              addTask('✅ 完整检测执行成功');
-              fetchGames();
-            } else {
-              addTask('❌ 完整检测执行失败');
-            }
-          } catch (error) {
-            console.error('Error running daily job:', error);
-            addTask('❌ 完整检测出错');
-          }
-
-          setLoading(false);
-        };
+        const [statusFilter, setStatusFilter] = React.useState('all');
+        const [sortBy, setSortBy] = React.useState('totalScore');
+        const [sortOrder, setSortOrder] = React.useState('desc');
 
         React.useEffect(() => {
-          fetchGames();
-        }, [fetchGames]);
-
-        const stats = React.useMemo(() => {
-          return {
-            total: games.length,
-            worthDoing: games.filter(g => g.status === 'worth_doing').length,
-            observe: games.filter(g => g.status === 'observe').length,
-            pending: games.filter(g => g.status === 'pending').length
-          };
-        }, [games]);
-
-        const getStatusStyle = (status) => {
-          switch (status) {
-            case 'worth_doing':
-              return 'px-2 py-1 rounded text-xs bg-green-900/30 text-green-400 border border-green-700';
-            case 'observe':
-              return 'px-2 py-1 rounded text-xs bg-red-900/30 text-red-400 border border-red-700';
-            default:
-              return 'px-2 py-1 rounded text-xs bg-yellow-900/30 text-yellow-400 border border-yellow-700';
-          }
-        };
-
-        const getStatusText = (status) => {
-          switch (status) {
-            case 'worth_doing':
-              return '值得做';
-            case 'observe':
-              return '观察';
-            default:
-              return '待检测';
-          }
-        };
+          setTimeout(() => {
+            setGames([
+              {
+                id: 1,
+                gameName: 'Test Game 1',
+                source: 'Steam',
+                trendScore: 85,
+                ytScore: 90,
+                totalScore: 87,
+                status: 'worth_doing'
+              },
+              {
+                id: 2,
+                gameName: 'Test Game 2',
+                source: 'Epic',
+                trendScore: 75,
+                ytScore: 80,
+                totalScore: 77,
+                status: 'observe'
+              }
+            ]);
+            setTasks([
+              '2026/2/28 18:40:05 - 开始完整检测...',
+              '2026/2/28 18:40:10 - 检测完成',
+              '2026/2/28 18:40:15 - 抓取: 10, 评分: 10, 值得做: 5'
+            ]);
+          }, 1000);
+        }, []);
 
         return React.createElement('div', {
           className: 'min-h-screen bg-[#0f1419] text-white'
@@ -121,10 +77,8 @@
             ]),
             React.createElement('button', {
               key: 'run-button',
-              onClick: runFullCheck,
-              disabled: loading,
-              className: 'bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors'
-            }, loading ? '执行中...' : '执行完整检测')
+              className: 'bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 transition-colors'
+            }, '执行完整检测')
           ])),
           React.createElement('main', {
             key: 'main',
@@ -141,7 +95,7 @@
                 React.createElement('div', {
                   key: 'total-value',
                   className: 'text-5xl font-bold mb-2 text-white'
-                }, stats.total),
+                }, games.length),
                 React.createElement('div', {
                   key: 'total-label',
                   className: 'text-sm text-gray-400'
@@ -154,7 +108,7 @@
                 React.createElement('div', {
                   key: 'worth-doing-value',
                   className: 'text-5xl font-bold mb-2 text-green-500'
-                }, stats.worthDoing),
+                }, games.filter(game => game.status === 'worth_doing').length),
                 React.createElement('div', {
                   key: 'worth-doing-label',
                   className: 'text-sm text-gray-400'
@@ -167,7 +121,7 @@
                 React.createElement('div', {
                   key: 'observe-value',
                   className: 'text-5xl font-bold mb-2 text-red-500'
-                }, stats.observe),
+                }, games.filter(game => game.status === 'observe').length),
                 React.createElement('div', {
                   key: 'observe-label',
                   className: 'text-sm text-gray-400'
@@ -180,11 +134,41 @@
                 React.createElement('div', {
                   key: 'pending-value',
                   className: 'text-5xl font-bold mb-2 text-yellow-500'
-                }, stats.pending),
+                }, games.filter(game => game.status === 'pending').length),
                 React.createElement('div', {
                   key: 'pending-label',
                   className: 'text-sm text-gray-400'
                 }, '待检测')
+              ])
+            ]),
+            React.createElement('div', {
+              key: 'actions',
+              className: 'bg-[#1a2332] rounded-lg border border-gray-800 p-6'
+            }, [
+              React.createElement('h2', {
+                key: 'actions-title',
+                className: 'text-lg mb-4'
+              }, '快速操作'),
+              React.createElement('div', {
+                key: 'action-buttons',
+                className: 'flex flex-wrap gap-3'
+              }, [
+                React.createElement('button', {
+                  key: 'scrape',
+                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
+                }, '🎮 抓取游戏'),
+                React.createElement('button', {
+                  key: 'trend',
+                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
+                }, '📈 趋势检测'),
+                React.createElement('button', {
+                  key: 'youtube',
+                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
+                }, '📺 YouTube检测'),
+                React.createElement('button', {
+                  key: 'update',
+                  className: 'bg-[#0f1419] hover:bg-[#1f2937] border border-gray-700 hover:border-gray-600 px-4 py-2 rounded text-sm transition-colors flex items-center gap-2'
+                }, '🔄 更新评分')
               ])
             ]),
             React.createElement('div', {
@@ -272,8 +256,8 @@
                     key: 'status-' + game.id,
                     className: 'px-6 py-4'
                   }, React.createElement('span', {
-                    className: getStatusStyle(game.status)
-                  }, getStatusText(game.status))),
+                    className: game.status === 'worth_doing' ? 'px-2 py-1 rounded text-xs bg-green-900/30 text-green-400 border border-green-700' : game.status === 'observe' ? 'px-2 py-1 rounded text-xs bg-red-900/30 text-red-400 border border-red-700' : 'px-2 py-1 rounded text-xs bg-yellow-900/30 text-yellow-400 border border-yellow-700'
+                  }, game.status === 'worth_doing' ? '值得做' : game.status === 'observe' ? '观察' : '待检测')),
                   React.createElement('td', {
                     key: 'details-' + game.id,
                     className: 'px-6 py-4'
